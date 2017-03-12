@@ -10,127 +10,6 @@
   <script src="utils.js"></script>
   <script>
     $(document).ready(function(){
-
-      // Used by the auto copy to clipboard
-      var stuff_to_copy_to_clipboard = "";
-
-      // Puts commas in input field
-      $('#collateral').keyup(function(event) {
-        // skip for arrow keys
-        if(event.which >= 37 && event.which <= 40) return;
-        // format number
-        $(this).val(function(index, value) {
-          return value
-          .replace(/\D/g, "")
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-          ;
-        });
-      });
-
-      // Puts commas in input field
-      $('#jumps').keyup(function(event) {
-        // skip for arrow keys
-        if(event.which >= 37 && event.which <= 40) return;
-        // format number
-        $(this).val(function(index, value) {
-          return value
-          .replace(/\D/g, "")
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-          ;
-        });
-      });
-
-      $('.output_area').click(function() {
-        // Copies price to clipboard when the output area is clicked
-        copyTextToClipboard(stuff_to_copy_to_clipboard);
-      });
-
-      $('.disclaimer_footer').click(function() {
-        // Copies price to clipboard when the output area is clicked
-        copyTextToClipboard(stuff_to_copy_to_clipboard);
-      });
-
-      $('.header').click(function() {
-        // Copies price to clipboard when the output area is clicked
-        copyTextToClipboard(stuff_to_copy_to_clipboard);
-      });
-
-      $('#collateral_label').click(function() {
-        $('#collateral_label').addClass('active');
-      })
-
-      $('#jumps_label').click(function() {
-        $('#jumps_label').addClass('active');
-      })
-
-      $('html').click(function() {
-        // Reward Rates by Rita Jita, site made by Rashad Charante
-        var collateral = $('#collateral').val();
-        // Sanitizes inputs by getting rid of commas and other stuff
-        collateral = collateral.replace(/[^\d\.\-\ ]/g, '');
-        var jumps = $('#jumps').val();
-        jumps = jumps.replace(/[^\d\.\-\ ]/g, '');
-        var reward = 0;
-        var base_rate = 0;
-        // Shamelessly ripped from stack overflow
-        function numberWithCommas(x) {
-          return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-
-        // Base Rate
-        if (jumps <= 10) {
-          base_rate = 1000000;
-        } else {
-          if (jumps <= 15) {
-            base_rate = 750000;
-          } else {
-            if (jumps <= 25) {
-              base_rate = 500000;
-            } else {
-              base_rate = 250000;
-            }
-          }
-        }
-        // Reward
-        if (collateral * 0.001 < base_rate) {
-          reward = base_rate * jumps;
-        } else {
-          reward = collateral * 0.001 * jumps;
-        }
-
-        // Extra Fees
-        if ($('#rush').prop('checked')) {
-          reward = reward * 2;
-        }
-
-        if ($('#lowsec').prop('checked')) {
-          reward = reward * 2;
-        }
-        
-        // updates prices displayed in text
-        if (reward > 0) {
-          $('#reward_label').addClass('active');
-          $('#reward_ipj_label').addClass('active');
-          $('#reward').val(numberWithCommas(reward.toFixed(2)));
-          var ipj = reward / jumps
-          ipj = ipj.toFixed(2);
-          $('#reward_ipj').val(numberWithCommas(ipj));
-          stuff_to_copy_to_clipboard = reward;
-        }
-      });
-    });
-<!DOCTYPE html>
-
-<head>
-  <title>Haulers Channel - Base Rate Calculator</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="style-ogb.css">
-  <script src="utils.js"></script>
-  <script>
-    $(document).ready(function(){
       // Used by the auto copy to clipboard
       var stuff_to_copy_to_clipboard = "";
 function NumFormat(value){
@@ -177,11 +56,16 @@ return value
 		else if (collat > 1e9){
 			mult /= (Math.log( collat/5e7)/Math.log(20));
 		}
-		if ($('#lowsec').prop('checked')){mult *= 1.5;}
 		if ($('#rush').prop('checked')) {
-			 mult *= (collat > 2e9?4:2);
+			if (collat > 2e9){
+				mult *= Math.max(2.0,2.0*(Math.log( collat/2e9)/Math.log(5)));
+			}
+			else{
+				mult *= 2.0;
+			}
+			if (type == 'L'){mult *= 2;}
 		}
-		if (type == 'L'){mult *= 3;} //Non JF lowsec pays triple.
+		if (type == 'L'){mult *= 2;} //Non JF lowsec pays triple.
 		if (type == 'H' || volume <= 62500){//highsec or non JF lowsec
 			return mult * base * jumps * collat / 1e9;
 		}
