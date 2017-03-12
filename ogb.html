@@ -119,6 +119,103 @@
         }
       });
     });
+<!DOCTYPE html>
+
+<head>
+  <title>Haulers Channel - Base Rate Calculator</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="style-ogb.css">
+  <script src="utils.js"></script>
+  <script>
+    $(document).ready(function(){
+      // Used by the auto copy to clipboard
+      var stuff_to_copy_to_clipboard = "";
+function NumFormat(value){
+return value
+          .replace(/\D/g, "")
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          ;
+}
+
+        function numberWithCommas(x) {
+          return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+      // Puts commas in input field
+      $('input.to_format_number').keyup(function(event) {
+        // skip for arrow keys
+        if(event.which >= 37 && event.which <= 40) return;
+        // format number
+        $(this).val(function(index, value) {
+          return NumFormat( value);
+        });
+      });
+	  
+	  function CalcReward(){
+		var volume = parseFloat($( '#volume').val().replace(/[^\d\.\-\ ]/g, ''));
+		var jumps = parseInt($('#jumps').val().replace(/[^\d\.\-\ ]/g, ''));
+		var collat = parseFloat($('#collateral').val().replace(/[^\d\.\-\ ]/g, ''));
+		var type = $('#type_ipj').prop('checked')?'L':'H';
+		
+		if (!volume || !jumps || !collat){return;}
+		
+		var base = 1e6;
+		var mult = 1;
+		if (volume <= 12e3){mult *= 0.5;}
+		else if(volume <= 60e3){mult *= 0.75;}
+		if (volume > 62500 && collat < 1e9){collat = (1e9+collat) * 0.5;}//low freighter collat pays more
+		
+		if (jumps < 1){jumps = 1;}//same system counts as 1 jump
+		if (jumps < 5){//low jumps pay more.
+			jumps = (5+jumps)*0.5;
+		}
+		if (collat >1e9 && volume <= 60e3){//progressive rebate for very high collats
+			mult /= (Math.log( collat/1e8)/Math.log(10));
+		}
+		else if (collat > 1e9){
+			mult /= (Math.log( collat/5e7)/Math.log(20));
+		}
+		if ($('#lowsec').prop('checked')){mult *= 1.5;}
+		if ($('#rush').prop('checked')) {
+			 mult *= 2;
+		}
+		if (type == 'L'){mult *= 3;} //Non JF lowsec pays triple.
+		if (type == 'H' || volume <= 62500){//highsec or non JF lowsec
+			return mult * base * jumps * collat / 1e9;
+		}
+		else {//null, JF
+			base = 60e6;
+			if (volume < 100){mult = 0.25;}
+			else if (volume <= 12e3){mult = 0.5;}
+			else if (volume <= 60e3){mult = 0.75;}
+			else if (volume <= 340e3){mult = 1;}
+			else {mult = 4;}
+			if ($('#rush').prop('checked')) {
+			  mult *= 2;
+			}
+			return (mult * base * (Math.max(1.0,jumps/7)) + collat * 0.01);
+		}
+	  }
+	  
+
+      $('.to_change').on( 'change paste keyup', function() {
+        var reward = CalcReward();
+		if (!reward){return;}
+        var ipj = reward / parseInt($('#jumps').val().replace(/[^\d\.\-\ ]/g, ''));
+        
+        if (reward > 0) {
+          $('#reward_label').addClass('active');
+          $('#reward_ipj_label').addClass('active');
+          $('#reward').val(numberWithCommas(reward.toFixed(2).toString()));
+
+          ipj = ipj.toFixed(2).toString();
+          $('#reward_ipj').val(numberWithCommas(ipj));
+          stuff_to_copy_to_clipboard = reward;
+        }
+      });
+    });
   </script>
 </head>
 <body class="grey darken-3">
@@ -136,42 +233,61 @@
           <div class="col s12 input_area" style="margin-left: 15px;">
             <div class="row">
               <!-- Left Side -->
-              <div class="col s2 offset-s4">
+              <div class="col s3 offset-s2">
                 <form class="col s12">
                   <div class="row">
                     <div class="input-field col s12">
-                      <input id="collateral" type="text" class="validate">
+                      <input id="collateral" type="text" value=""class="to_format_number to_change">
                       <label id="collateral_label" for="collateral">Collateral</label>
                     </div>
                     <div class="input-field col s12">
-                      <input id="jumps" type="text" class="validate">
+                      <input id="jumps" type="text" value="" class="to_format_number to_change">
                       <label id="jumps_label" for="jumps"># of Jumps</label>
                     </div>
                     <p class="left-align" style="margin-left: 10px">
-                      <input type="checkbox" class="filled-in" id="rush"/>
+                      <input type="checkbox" class="filled-in to_change" value="1" id="rush"/>
                       <label for="rush">Rush Delivery &nbsp;&nbsp;</label>
                     </p>
                   </div>
                 </form>
               </div>
-              <!-- Right Side -->
-              <div class="col s2" style="margin-left: -21px">
+              <!-- Center -->
+              <div class="col s3" style="margin-left: -21px">
                   <!-- Output Area -->
                   <div class="col s12 output_area">
                     <div class="row bottom_area">
                       <!-- Bottom Area -->
                       <div class="input-field col s12">
-                        <input style="color: green;" id="reward" type="text" class="validate">
+                        <input style="color: green;" id="reward" type="text" class="">
                         <label id="reward_label" for="reward">Reward</label>
                       </div>
                       <div class="input-field col s12">
-                        <input style="color: green;" id="reward_ipj" type="text" class="validate">
+                        <input style="color: green;" id="reward_ipj" type="text" class="">
                         <label id="reward_ipj_label" for="reward_ipj">Reward Per Jump</label>
                       </div>
                       <p class="left-align" style="margin-left: 10px">
-                        <input type="checkbox" class="filled-in" id="lowsec"/>
-                        <label for="lowsec">Lowsec</label>
+                        <input type="checkbox" class="filled-in to_change" value="1" id="lowsec"/>
+                        <label for="lowsec">Nowhere near a hub</label>
                       </p>
+                    </div>
+                  </div>
+              </div>
+              <!-- Right Side -->
+              <div class="col s3" style="margin-left: -21px;margin-top:15px">
+                  <!-- Output Area -->
+                  <div class="col s12">
+                    <div class="row bottom_area">
+                      <!-- Bottom Area -->
+                      <div class="input-field col s12">
+                        <input style="color: black;" value=""id="volume" type="text" class="to_format_number to_change">
+                        <label id="volume_label" for="volume">Volume</label>
+                      </div>
+                      <div class="input-field col s12">
+						  <p class="left-align" style="margin-left: 10px">
+							<input type="checkbox" class="filled-in to_change" value="L" id="type_ipj"/>
+							<label for="type_ipj">Low/Nullsec</label>
+						  </p>
+                      </div>
                     </div>
                   </div>
               </div>
@@ -189,3 +305,4 @@
     </div>
   </div>
 </body>
+
