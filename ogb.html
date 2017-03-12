@@ -54,7 +54,7 @@ return value
 			mult /= Math.max(1.0,Math.log( collat/1e8)/Math.log(10));
 		}
 		else if (collat > 1e9){
-			mult /= Math.max(1.0,Math.log( collat/5e7)/Math.log(5));
+			mult *= Math.max(1.0,Math.log( collat/1e8)/Math.log(10));
 		}
 		if ($('#rush').prop('checked')) {
 			if (collat > 2e9){
