@@ -23,7 +23,7 @@ return value
           return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
       // Puts commas in input field
-      $('input.to_format_number').keyup(function(event) {
+      $('input.to_format_number').blur(function(event) {
         // skip for arrow keys
         if(event.which >= 37 && event.which <= 40) return;
         // format number
