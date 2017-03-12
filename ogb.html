@@ -53,8 +53,8 @@ return value
 		if (collat >1e9 && volume <= 60e3){//progressive rebate for very high collats
 			mult /= Math.max(1.0,Math.log( collat/1e8)/Math.log(10));
 		}
-		else if (collat > 1e9){
-			mult *= Math.max(1.0,Math.log( collat/1e8)/Math.log(10));
+		else if (collat > 3e9){
+			mult *= Math.max(1.0,Math.log( collat/15e7)/Math.log(15));
 		}
 		if ($('#rush').prop('checked')) {
 			if (collat > 2e9){
