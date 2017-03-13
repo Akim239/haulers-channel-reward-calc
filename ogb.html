@@ -190,11 +190,11 @@ return value
                     <div class="row bottom_area">
                       <!-- Bottom Area -->
                       <div class="input-field col s12">
-                        <input style="color: black;" value=""id="volume" type="text" class="to_format_number to_change">
+                        <input value=""id="volume" type="text" class="to_format_number to_change">
                         <label id="volume_label" for="volume">Volume</label>
 						<button class="btn grey darken-2 volume-btn" onclick="$( '#volume').val( '600,000');$( '#volume').focus();AllCalc()">Freighter</button>
 						<button class="btn grey darken-2 volume-btn" onclick="$( '#volume').val( '60,000');$( '#volume').focus();AllCalc()">Deep Space Transport</button>
-						<button class="btn grey darken-2 volume-btn" onclick="$( '#volume').val( '12,000');$( '#volume').focus();AllCalc()">Blocade Runner</button>
+						<button class="btn grey darken-2 volume-btn" onclick="$( '#volume').val( '12,000');$( '#volume').focus();AllCalc()">Blockade Runner</button>
                       </div>
                       <div class="input-field col s12">
                       </div>
@@ -208,7 +208,7 @@ return value
                     <div class="row bottom_area">
                       <!-- Bottom Area -->
                       <div class="input-field col s12">
-                        <input style="color: green;" id="reward" type="text" class="">
+                        <input style="color: green;" id="reward" type="text" class="" onfocus="select()">
                         <label id="reward_label" for="reward">Reward</label>
                       </div>
 						  <p class="left-align" style="margin-left: 10px">
