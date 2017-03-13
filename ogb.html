@@ -41,6 +41,7 @@ return value
 		if (!volume || !jumps || !collat){return;}
 		
 		var base = 1e6;
+		var add = 0;
 		var mult = 1;
 		if (volume <= 12e3){mult *= 1;}
 		else if(volume <= 60e3){mult *= 1;}
@@ -53,21 +54,60 @@ return value
 		if (collat >1e9 && volume <= 60e3){//progressive rebate for very high collats
 			mult /= Math.max(1.0,Math.log( collat/1e8)/Math.log(10));
 		}
-		else if (collat > 3e9){
+		if (collat > 3e9 && volume > 60e3){
 			mult *= Math.max(1.0,Math.log( collat/15e7)/Math.log(15));
 		}
+		
+		if (volume > 1050e3){
+			add += 250e3;
+			if (collat > 2e9){
+				add += 200e3;
+			}
+		}
+		else if (volume > 880e3){
+			if (collat > 1.5e9){
+				add += 100e3;
+			}
+			if (collat > 2.5e9){
+				add += 100e3;
+			}
+			if (collat > 3e9){
+				add += 200e3;
+			}
+		}
+		else if (volume > 750e3){
+			if (collat > 2.5e9){
+				add += 100e3;
+			}
+			if (collat > 3e9){
+				add += 200e3;
+			}
+		}
+		else if (volume > 500e3){
+			if (collat > 2.0e9){
+				add += 100e3;
+			}
+			if (collat > 3.5e9){
+				add += 100e3;
+			}
+		}
+
+		
 		if ($('#rush').prop('checked')) {
 			if (collat > 2e9){
-				mult *= 2.0 * Math.max(1.0,Math.log( collat/2e8)/Math.log(20));
+				mult *= 2.0 * Math.max(1.0,Math.log( collat/1e8)/Math.log(20));
 			}
 			else{
 				mult *= 2.0;
 			}
 			if (type == 'L'){mult *= 2;}
 		}
-		if (type == 'L'){mult *= 2;} //Non JF lowsec pays triple.
+		if (type == 'L'){
+			mult *= 2;
+			//Non JF lowsec pays double.
+		} 
 		if (type == 'H' || volume <= 62500){//highsec or non JF lowsec
-			return mult * base * jumps * collat / 1e9;
+			return ((mult * base *collat / 1e9) + add) * jumps ;
 		}
 		else {//null, JF
 			base = 60e6;
@@ -189,4 +229,3 @@ return value
     </div>
   </div>
 </body>
-
