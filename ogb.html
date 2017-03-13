@@ -9,10 +9,22 @@
   <link rel="stylesheet" href="style-ogb.css">
   <script src="utils.js"></script>
   <script>
-    $(document).ready(function(){
-      // Used by the auto copy to clipboard
-      var stuff_to_copy_to_clipboard = "";
-function NumFormat(value){
+  	  function AllCalc() {
+        var reward = CalcReward();
+		if (!reward){return;}
+        var ipj = reward / parseInt($('#jumps').val().replace(/[^\d\.\-\ ]/g, ''));
+        
+        if (reward > 0) {
+          $('#reward_label').addClass('active');
+          $('#reward_ipj_label').addClass('active');
+          $('#reward').val(numberWithCommas(reward.toFixed(2).toString()));
+
+          ipj = ipj.toFixed(2).toString();
+          $('#reward_ipj').val(numberWithCommas(ipj));
+          stuff_to_copy_to_clipboard = reward;
+        }
+      }
+	  function NumFormat(value){
 return value
           .replace(/\D/g, "")
           .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -22,16 +34,8 @@ return value
         function numberWithCommas(x) {
           return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
-      // Puts commas in input field
-      $('input.to_format_number').blur(function(event) {
-        // skip for arrow keys
-        if(event.which >= 37 && event.which <= 40) return;
-        // format number
-        $(this).val(function(index, value) {
-          return NumFormat( value);
-        });
-      });
-	  
+		
+			  
 	  function CalcReward(){
 		var volume = parseFloat($( '#volume').val().replace(/[^\d\.\-\ ]/g, ''));
 		var jumps = parseInt($('#jumps').val().replace(/[^\d\.\-\ ]/g, ''));
@@ -122,23 +126,25 @@ return value
 			return (mult * base * (Math.max(1.0,jumps/7)) + collat * 0.01);
 		}
 	  }
+    $(document).ready(function(){
+      // Used by the auto copy to clipboard
+      var stuff_to_copy_to_clipboard = "";
+
+
+      // Puts commas in input field
+      $('input.to_format_number').blur(function(event) {
+        // skip for arrow keys
+        if(event.which >= 37 && event.which <= 40) return;
+        // format number
+        $(this).val(function(index, value) {
+          return NumFormat( value);
+        });
+      });
+
 	  
 
-      $('.to_change').on( 'change paste keyup', function() {
-        var reward = CalcReward();
-		if (!reward){return;}
-        var ipj = reward / parseInt($('#jumps').val().replace(/[^\d\.\-\ ]/g, ''));
-        
-        if (reward > 0) {
-          $('#reward_label').addClass('active');
-          $('#reward_ipj_label').addClass('active');
-          $('#reward').val(numberWithCommas(reward.toFixed(2).toString()));
 
-          ipj = ipj.toFixed(2).toString();
-          $('#reward_ipj').val(numberWithCommas(ipj));
-          stuff_to_copy_to_clipboard = reward;
-        }
-      });
+      $('.to_change').on( 'change paste keyup', AllCalc);
     });
   </script>
 </head>
@@ -177,12 +183,12 @@ return value
                   <div class="col s12">
                     <div class="row bottom_area">
                       <!-- Bottom Area -->
-                     <div class="input-field col s12">
+                      <div class="input-field col s12">
                         <input style="color: black;" value=""id="volume" type="text" class="to_format_number to_change">
                         <label id="volume_label" for="volume">Volume</label>
-						<button class="btn grey darken-2" onclick="$( '#volume').val( '600,000');$( '#volume').focus()" style="margin:0 auto;width:30%;font-size:0.8em;height:auto;padding:0.2em 0.5em">Freighter</button>
-						<button class="btn grey darken-2" onclick="$( '#volume').val( '60,000');$( '#volume').focus()" style="margin:0 auto;width:30%;font-size:0.8em;height:auto;padding:0.2em 0.5em">DST</button>
-						<button class="btn grey darken-2" onclick="$( '#volume').val( '12,000');$( '#volume').focus()" style="margin:0 auto;width:30%;font-size:0.8em;height:auto;padding:0.2em 0.5em">BR</button>
+						<button class="btn grey darken-2" onclick="$( '#volume').val( '600,000');$( '#volume').focus();AllCalc()" style="margin:0 auto;width:30%;font-size:0.8em;height:auto;padding:0.2em 0.5em">Freighter</button>
+						<button class="btn grey darken-2" onclick="$( '#volume').val( '60,000');$( '#volume').focus();AllCalc()" style="margin:0 auto;width:30%;font-size:0.8em;height:auto;padding:0.2em 0.5em">DST</button>
+						<button class="btn grey darken-2" onclick="$( '#volume').val( '12,000');$( '#volume').focus();AllCalc()" style="margin:0 auto;width:30%;font-size:0.8em;height:auto;padding:0.2em 0.5em">BR</button>
                       </div>
                       <div class="input-field col s12">
                       </div>
