@@ -107,7 +107,7 @@ return value
 			//Non JF lowsec pays double.
 		} 
 		if (type == 'H' || volume <= 62500){//highsec or non JF lowsec
-			return ((mult * base *collat / 1e9) + add) * jumps ;
+			return ((mult * base *collat / 1e9) + add) * jumps;
 		}
 		else {//null, JF
 			base = 60e6;
@@ -154,10 +154,10 @@ return value
           </div>
           <!--<hr>-->
           <!-- Input Area -->
-          <div class="col s12 input_area" style="margin-left: 15px;">
+          <div class="col s12 input_area" style="margin-left: 15px">
             <div class="row">
               <!-- Left Side -->
-              <div class="col s3 offset-s2">
+              <div class="col s3 offset-s2" style=";margin-top:15px">
                 <form class="col s12">
                   <div class="row">
                     <div class="input-field col s12">
@@ -168,15 +168,34 @@ return value
                       <input id="jumps" type="text" value="" class="to_format_number to_change">
                       <label id="jumps_label" for="jumps"># of Jumps</label>
                     </div>
+                  </div>
+                </form>
+              </div>
+              <!-- Right Side -->
+              <div class="col s3" style="margin-left: -21px;">
+                  <!-- Output Area -->
+                  <div class="col s12">
+                    <div class="row bottom_area">
+                      <!-- Bottom Area -->
+                      <div class="input-field col s12">
+                        <input style="color: black;" value=""id="volume" type="text" class="to_format_number to_change">
+                        <label id="volume_label" for="volume">Volume</label>
+                      </div>
+                      <div class="input-field col s12">
+                      </div>
+						  <p class="left-align" style="margin-left: 10px">
+							<input type="checkbox" class="filled-in to_change" value="L" id="type_ipj"/>
+							<label for="type_ipj">Low/Nullsec</label>
+						  </p>
                     <p class="left-align" style="margin-left: 10px">
                       <input type="checkbox" class="filled-in to_change" value="1" id="rush"/>
                       <label for="rush">Rush Delivery &nbsp;&nbsp;</label>
                     </p>
+                    </div>
                   </div>
-                </form>
               </div>
               <!-- Center -->
-              <div class="col s3" style="margin-left: -21px">
+              <div class="col s3" style="margin-left: -21px;margin-top:15px">
                   <!-- Output Area -->
                   <div class="col s12 output_area">
                     <div class="row bottom_area">
@@ -189,29 +208,6 @@ return value
                         <input style="color: green;" id="reward_ipj" type="text" class="">
                         <label id="reward_ipj_label" for="reward_ipj">Reward Per Jump</label>
                       </div>
-                      <p class="left-align" style="margin-left: 10px">
-                        <input type="checkbox" class="filled-in to_change" value="1" id="lowsec"/>
-                        <label for="lowsec">Nowhere near a hub</label>
-                      </p>
-                    </div>
-                  </div>
-              </div>
-              <!-- Right Side -->
-              <div class="col s3" style="margin-left: -21px;margin-top:15px">
-                  <!-- Output Area -->
-                  <div class="col s12">
-                    <div class="row bottom_area">
-                      <!-- Bottom Area -->
-                      <div class="input-field col s12">
-                        <input style="color: black;" value=""id="volume" type="text" class="to_format_number to_change">
-                        <label id="volume_label" for="volume">Volume</label>
-                      </div>
-                      <div class="input-field col s12">
-						  <p class="left-align" style="margin-left: 10px">
-							<input type="checkbox" class="filled-in to_change" value="L" id="type_ipj"/>
-							<label for="type_ipj">Low/Nullsec</label>
-						  </p>
-                      </div>
                     </div>
                   </div>
               </div>
@@ -220,6 +216,7 @@ return value
           <!-- Footer -->
           <div class="disclaimer_footer">
             <p class="center-align" style="color: #FFFFFF"><span style="color: yellow">Disclaimer: </span>The Final Price is entirely up to yourself.</p>
+            <p class="center-align" style="color: #FFFFFF">This calculator assumes the contract starts and ends near a hub.</p>
             <p class="center-align" style="color: #FFFFFF"> This calculator is intended for people new to courier contracts, anything under</p>
             <p class="center-align" style="color: #FFFFFF">these values will normally move slower than normal., and possibly not at all.</p>
             <p class="center-align" style="color: #FFFFFF"><strong>Note: <i>The more you pay </i> = the less you wait.</strong></p>
