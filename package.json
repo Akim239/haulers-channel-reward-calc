@@ -1,0 +1,16 @@
+{
+  "name": "haulers-channel-reward-calc",
+  "version": "1.0.0",
+  "description": "A Shipping Contract Reward Calculator for Eve Online",
+  "dependencies": {
+    "jasmine": "^3.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kujara/haulers-channel-reward-calc.git"
+  }
+}
